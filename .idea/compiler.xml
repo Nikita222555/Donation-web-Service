@@ -7,11 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Service1-Producer" />
+        <module name="maven-archiver" />
         <module name="Service2-Consumer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="maven-archiver" target="1.5" />
       <module name="producer" target="17" />
     </bytecodeTargetLevel>
   </component>

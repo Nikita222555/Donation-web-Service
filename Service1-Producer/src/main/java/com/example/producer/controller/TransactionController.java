@@ -42,7 +42,7 @@ public class TransactionController {
     public ResponseEntity<?> openTransaction(@RequestBody Transaction transaction) {
         try {
             // Search client
-            Optional<Client> clientOptional = clientRepository.findByFullName(transaction.getName());
+            Optional<Client> clientOptional = clientRepository.fullName(transaction.getName());
 
             if (!clientOptional.isPresent()) {
                 return ResponseEntity.badRequest().body("--- NAME YOUR CLIENT NOT FOUND ---");
@@ -58,7 +58,7 @@ public class TransactionController {
             kafkaTemplate.send("topic-1", jsonMessage);
 
             // Logic for UPDATING balance
-            Optional<Balance> balanceOptional = balanceRepository.findByClient(client);
+            Optional<Balance> balanceOptional = balanceRepository.client(client);
 
             if (balanceOptional.isPresent()) {
                 Balance balance = balanceOptional.get();

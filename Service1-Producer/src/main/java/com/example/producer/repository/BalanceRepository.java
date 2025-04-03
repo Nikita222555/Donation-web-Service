@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 public interface BalanceRepository extends JpaRepository<Balance, Long> {
 
-    Optional<Balance> findByClient(Client client);
+    Optional<Balance> client(Client client);
 
 }
 

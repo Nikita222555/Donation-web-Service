@@ -1,0 +1,8 @@
+com\example\producer\config\KafkaConfig.class
+com\example\producer\model\Transaction.class
+com\example\producer\repository\BalanceRepository.class
+com\example\producer\controller\TransactionController.class
+com\example\producer\repository\ClientRepository.class
+com\example\producer\model\Client.class
+com\example\producer\ProducerApplication.class
+com\example\producer\model\Balance.class
