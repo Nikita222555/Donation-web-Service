@@ -7,19 +7,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Service1-Producer" />
-        <module name="maven-archiver" />
         <module name="Service2-Consumer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="producer" target="17" />
+      <module name="maven-archiver" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Service1-Producer" options="-parameters" />
       <module name="Service2-Consumer" options="-parameters" />
-      <module name="producer" options="-parameters" />
     </option>
   </component>
 </project>

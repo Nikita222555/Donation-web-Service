@@ -4,8 +4,6 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/Service2-Consumer/target/maven-archiver/pom.properties" />
-        <option value="$PROJECT_DIR$/UPDATER-Service1(Producer)/producer/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
