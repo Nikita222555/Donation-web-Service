@@ -20,3 +20,9 @@
 ### Принцип работы сервиса 2 (Consumer):
 - Чтение и обработка сообщения из "topic-1" (Kafka);
 - Внесение данных об операции в БД (*donation*);
+
+### Подготовка окружения 
+##### Запуск ZooKeeper Kafka
+     .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+     .\bin\windows\kafka-server-start.bat .\config\server.properties
+  Перед запуском рекомендуется очистить логи Kafka (.\Kafka\kafka-logs)
