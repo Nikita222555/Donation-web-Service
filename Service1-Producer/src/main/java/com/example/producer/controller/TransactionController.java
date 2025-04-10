@@ -11,9 +11,11 @@
 package com.example.producer.controller;
 
 import com.example.producer.model.Balance;
+import com.example.producer.model.CheckPay;
 import com.example.producer.model.Client;
 import com.example.producer.model.Transaction;
 import com.example.producer.repository.BalanceRepository;
+import com.example.producer.repository.CheckPayment;
 import com.example.producer.repository.ClientRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +39,11 @@ public class TransactionController {
 
     @Autowired
     private BalanceRepository balanceRepository;
+
+    @Autowired
+    private CheckPayment checkPayment;
+
+    private Long transactionId;
 
     @PostMapping("/open")
     public ResponseEntity<?> openTransaction(@RequestBody Transaction transaction) {
@@ -73,11 +80,21 @@ public class TransactionController {
                 balanceRepository.save(newBalance);
             }
 
-            return ResponseEntity.ok().body("--- PAYMENT HAS BEN CREDITED --- ");
+            // Checking INSERTION (transaction)
+            Long currentTransactId = checkPayment.getTransactionId();
+
+            if (transactionId == null || currentTransactId > transactionId) {
+                transactionId = currentTransactId;
+                return ResponseEntity.ok().body("--- PAYMENT HAS BEN CREDITED ---\n--- TRANSACTION-(Status : 200) --- ");
+            } else {
+                return ResponseEntity.badRequest().body("--- NO NEW TRANSACTIONS ---");
+            }
+
+
 
         } catch (JsonProcessingException e) {
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("--- OPERATION FAILED ---");
 
         }
     }

@@ -43,6 +43,7 @@ public class TransactionService {
             transaction.setClientAcc(client.getAccount()); // client_account = transaction.client_acc
 
             transactionRepository.save(transaction);
+            System.out.println(" --- SUCCESSFUL ---");
         } else {
             System.out.println(" --- INSERT ERROR --- ");
         }
