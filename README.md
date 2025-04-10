@@ -2,7 +2,7 @@
 
 
 ### Логика системы
-    Система имитирует некий сервис сбора пожертвований для N-количества благополучателей.
+  Система имитирует некий сервис сбора пожертвований для N-количества благополучателей.
   Она состоит из двух микросервисов, где первый - это web-сервис, принимающий входящие сообщения (*JSON*) и
 обновляющий баланс клиентов,а второй служит для внесения записей в базу данных (вносит совершенные "транзакции"). 
 Общение между ними организовано по Kafka.
@@ -22,7 +22,12 @@
 - Внесение данных об операции в БД (*donation*);
 
 ### Подготовка окружения 
-##### Запуск ZooKeeper Kafka
-     .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
-     .\bin\windows\kafka-server-start.bat .\config\server.properties
+##### Запуск ZooKeeper и Kafka
+ ZooKeeper:
+ 
+      .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+     
+ Kafka:
+ 
+      .\bin\windows\kafka-server-start.bat .\config\server.properties
   Перед запуском рекомендуется очистить логи Kafka (.\Kafka\kafka-logs)
