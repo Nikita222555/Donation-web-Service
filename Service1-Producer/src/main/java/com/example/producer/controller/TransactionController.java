@@ -11,11 +11,10 @@
 package com.example.producer.controller;
 
 import com.example.producer.model.Balance;
-import com.example.producer.model.CheckPay;
 import com.example.producer.model.Client;
+import com.example.producer.service.KafkaConsumer;
 import com.example.producer.model.Transaction;
 import com.example.producer.repository.BalanceRepository;
-import com.example.producer.repository.CheckPayment;
 import com.example.producer.repository.ClientRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,14 +40,13 @@ public class TransactionController {
     private BalanceRepository balanceRepository;
 
     @Autowired
-    private CheckPayment checkPayment;
+    private KafkaConsumer kafkaConsumer;
 
-    private Long transactionId;
 
     @PostMapping("/open")
-    public ResponseEntity<?> openTransaction(@RequestBody Transaction transaction) {
+    public ResponseEntity<?> openTransaction(@RequestBody Transaction transaction) throws InterruptedException {
         try {
-            // Search client
+            // Поиск клиента в базе по имени
             Optional<Client> clientOptional = clientRepository.fullName(transaction.getName());
 
             if (!clientOptional.isPresent()) {
@@ -57,14 +55,14 @@ public class TransactionController {
 
             Client client = clientOptional.get();
 
-            // JSON.Stringify
+            // Парсинг
             ObjectMapper mapper = new ObjectMapper();
             String jsonMessage = mapper.writeValueAsString(transaction);
 
-            // Send to KAFKA
+            // Отправка Сервису-2
             kafkaTemplate.send("topic-1", jsonMessage);
 
-            // Logic for UPDATING balance
+            // Обновляем баланс в таблице balance
             Optional<Balance> balanceOptional = balanceRepository.client(client);
 
             if (balanceOptional.isPresent()) {
@@ -80,23 +78,21 @@ public class TransactionController {
                 balanceRepository.save(newBalance);
             }
 
-            // Checking INSERTION (transaction)
-            Long currentTransactId = checkPayment.getTransactionId();
-
-            if (transactionId == null || currentTransactId > transactionId) {
-                transactionId = currentTransactId;
-                return ResponseEntity.ok().body("--- PAYMENT HAS BEN CREDITED ---\n--- TRANSACTION-(Status : 200) --- ");
-            } else {
-                return ResponseEntity.badRequest().body("--- NO NEW TRANSACTIONS ---");
-            }
-
-
-
         } catch (JsonProcessingException e) {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("--- OPERATION FAILED ---");
-
         }
+
+        // Получаем сообщение от Сервиса-2 (из темы topic-2)
+        String response = KafkaConsumer.getMessage();
+        System.out.println(response);
+            if (response.equals("INSERTED")){
+                return ResponseEntity.ok().body("--- PAYMENT HAS BEN CREDITED ---\n--- TRANSACTION-(Status : 200) --- ");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("--- OPERATION FAILED ---");
+            }
+
+
     }
 }
 
