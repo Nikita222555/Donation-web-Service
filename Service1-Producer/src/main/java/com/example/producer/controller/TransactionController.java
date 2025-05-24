@@ -10,20 +10,19 @@
 
 package com.example.producer.controller;
 
-import com.example.producer.model.Balance;
-import com.example.producer.model.Client;
-import com.example.producer.service.KafkaConsumer;
-import com.example.producer.model.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.example.producer.repository.BalanceRepository;
 import com.example.producer.repository.ClientRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.producer.service.KafkaConsumer;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
+import com.example.producer.model.Transaction;
+import org.springframework.http.HttpStatus;
+import com.example.producer.model.Balance;
+import com.example.producer.model.Client;
 import java.util.Optional;
 
 @RestController
