@@ -7,6 +7,7 @@
 
 package com.example.producer.model;
 
+// Модель сообщения от Сервиса 2
 public class Message {
 
     private String message;

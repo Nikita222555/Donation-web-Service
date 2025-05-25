@@ -7,17 +7,16 @@
 
 package com.example.consumer.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import com.example.consumer.repository.TransactionRepository;
+import org.springframework.kafka.annotation.KafkaListener;
+import com.example.consumer.repository.ClientRepository;
+import org.springframework.kafka.core.KafkaTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
+import com.example.consumer.model.Transaction;
 import com.example.consumer.model.Client;
 import com.example.consumer.model.Donat;
-import com.example.consumer.model.Transaction;
-import com.example.consumer.repository.ClientRepository;
-import com.example.consumer.repository.TransactionRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 
 @Service
@@ -41,17 +40,16 @@ public class TransactionService {
         Client client = clientRepository.fullName(transactionMessage.getName());
 
         if (client != null) {
+            // Делаем инсерт в transaction
             Transaction transaction = new Transaction();
             transaction.setClient(client);
             transaction.setAmount(transactionMessage.getAmount());
             transaction.setClientAcc(client.getAccount()); // client_account = transaction.client_acc
-
             transactionRepository.save(transaction);
-            //System.out.println(" --- SUCCESSFUL ---");
+            // Отправляем в Кафку Сервису-1
             kafkaTemplate.send("topic-2", "INSERTED");
         } else {
-            //System.out.println(" --- INSERT ERROR --- ");
-            kafkaTemplate.send("topic-2", "NOT INSERTED");
+            kafkaTemplate.send("topic-2", "FAILED TRANSACTION");
         }
     }
 }

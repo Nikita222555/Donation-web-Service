@@ -29,6 +29,8 @@ import java.util.Optional;
 @RequestMapping("/api/v1")
 public class TransactionController {
 
+    boolean balance = false;
+
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
@@ -66,7 +68,6 @@ public class TransactionController {
 
             if (balanceOptional.isPresent()) {
                 Balance balance = balanceOptional.get();
-                // Checking for NULL in column sum (in table "balance")
                 double currentAmount = balance.getAmount() != null ? balance.getAmount() : 0D;
                 balance.setAmount(currentAmount + transaction.getAmount());
                 balanceRepository.save(balance);
@@ -77,16 +78,18 @@ public class TransactionController {
                 balanceRepository.save(newBalance);
             }
 
+            balance = true;
+
         } catch (JsonProcessingException e) {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("--- OPERATION FAILED ---");
         }
 
         // Получаем сообщение от Сервиса-2 (из темы topic-2)
+        // Возвращаем ответ
         String response = KafkaConsumer.getMessage();
-        System.out.println(response);
-            if (response.equals("INSERTED")){
-                return ResponseEntity.ok().body("--- PAYMENT HAS BEN CREDITED ---\n--- TRANSACTION-(Status : 200) --- ");
+            if (response.equals("INSERTED") && balance){
+                return ResponseEntity.ok().body("Status.ok (200)\nBALANCE UPDATED\nTRANSACTION COMPLETED");
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("--- OPERATION FAILED ---");
             }
